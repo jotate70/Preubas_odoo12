@@ -208,6 +208,7 @@ class GeneralLedgerReportMoveLine(models.TransientModel):
     cost_center = fields.Char()
     tags = fields.Char()
     matching_number = fields.Char()
+    initial_balance = fields.Float(digits=(16, 2))
     debit = fields.Float(digits=(16, 2))
     credit = fields.Float(digits=(16, 2))
     cumul_balance = fields.Float(digits=(16, 2))
@@ -1372,6 +1373,7 @@ INSERT INTO
     label,
     cost_center,
     matching_number,
+    initial_balance,
     debit,
     credit,
     cumul_balance,
@@ -1437,6 +1439,7 @@ SELECT
     CONCAT_WS(' - ', NULLIF(ml.ref, ''), NULLIF(ml.name, '')) AS label,
     aa.name AS cost_center,
     fr.name AS matching_number,
+    ra.initial_balance, 
     ml.debit,
     ml.credit,
         """
