@@ -259,6 +259,49 @@ class AbstractReportXslx(models.AbstractModel):
                         )
         self.row_pos += 1
 
+    def write_initial_balance2(self, my_object, name, label):
+        """Write a specific ending balance line on current line
+        using defined columns field_final_balance name.
+
+        Columns are defined with `_get_report_columns` method.
+        """
+        row_count_name = self._get_col_count_final_balance_name()
+        col_pos_label = self._get_col_pos_final_balance_label()
+        self.sheet.merge_range(
+            self.row_pos, 3, self.row_pos, row_count_name - 1, name,
+            self.format_header_left
+        )
+        self.sheet.write(self.row_pos, col_pos_label, label,
+                         self.format_header_right)
+        for col_pos, column in self.columns.items():
+            if column.get('field_initial_balance'):
+                value = getattr(my_object, column['field_initial_balance'])
+                cell_type = column.get('type', 'string')
+                if cell_type == 'string':
+                    self.sheet.write_string(self.row_pos, col_pos, value or '')
+                elif cell_type == 'amount':
+                    self.sheet.write_number(
+                        self.row_pos, col_pos, float(value),
+                        self.format_header_amount
+                    )
+                elif cell_type == 'amount_currency':
+                    if my_object.currency_id:
+                        self.sheet.write_number(
+                            self.row_pos, col_pos, float(value),
+                            'EEEEEE'
+                        )
+            elif column.get('field_currency_balance'):
+                value = getattr(my_object, column['field_currency_balance'])
+                cell_type = column.get('type', 'string')
+                if cell_type == 'many2one':
+                    if my_object.currency_id:
+                        self.sheet.write_string(
+                            self.row_pos, col_pos,
+                            value.name or '',
+                            self.format_right
+                        )
+        self.row_pos += 1
+
     def write_ending_balance(self, my_object, name, label):
         """Write a specific ending balance line on current line
         using defined columns field_final_balance name.

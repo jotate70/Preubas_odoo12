@@ -34,23 +34,19 @@ class GeneralLedgerXslx(models.AbstractModel):
                 'field': 'tags',
                 'width': 10},
             10: {'header': _('Rec.'), 'field': 'matching_number', 'width': 5},
-            11: {'header': _('Saldo inicial'),
-                 'field': 'initial_balance',
-                 'type': 'amount',
-                 'width': 14},
-            12: {'header': _('Debit'),
+            11: {'header': _('Debit'),
                  'field': 'debit',
                  'field_initial_balance': 'initial_debit',
                  'field_final_balance': 'final_debit',
                  'type': 'amount',
                  'width': 14},
-            13: {'header': _('Credit'),
+            12: {'header': _('Credit'),
                  'field': 'credit',
                  'field_initial_balance': 'initial_credit',
                  'field_final_balance': 'final_credit',
                  'type': 'amount',
                  'width': 14},
-            14: {'header': _('Cumul. Bal.'),
+            13: {'header': _('Cumul. Bal.'),
                  'field': 'cumul_balance',
                  'field_initial_balance': 'initial_balance',
                  'field_final_balance': 'final_balance',
@@ -59,11 +55,11 @@ class GeneralLedgerXslx(models.AbstractModel):
         }
         if report.foreign_currency:
             foreign_currency = {
-                15: {'header': _('Cur.'),
+                14: {'header': _('Cur.'),
                      'field': 'currency_id',
                      'field_currency_balance': 'currency_id',
                      'type': 'many2one', 'width': 7},
-                16: {'header': _('Amount cur.'),
+                15: {'header': _('Amount cur.'),
                      'field': 'amount_currency',
                      'field_initial_balance':
                          'initial_balance_foreign_currency',
@@ -136,6 +132,7 @@ class GeneralLedgerXslx(models.AbstractModel):
 
                 # Display initial balance line for account
                 self.write_initial_balance(account)
+                self.write_initial_balance2(account)
 
                 # Display account move lines
                 for line in account.move_line_ids:
@@ -153,8 +150,8 @@ class GeneralLedgerXslx(models.AbstractModel):
                         self.write_array_header()
 
                     # Display initial balance line for partner
-
                     self.write_initial_balance(partner)
+                    self.write_initial_balance2(account)
 
                     # Display account move lines
                     for line in partner.move_line_ids:
@@ -186,6 +183,19 @@ class GeneralLedgerXslx(models.AbstractModel):
             label = _('Initial balance')
         super(GeneralLedgerXslx, self).write_initial_balance(
             my_object, label
+        )
+
+    def write_initial_balance2(self, my_object):
+        """Specific function to write initial balance for General Ledger"""
+        if 'partner' in my_object._name:
+            name = my_object.code + ' - ' + my_object.name
+            label = _('Partner Initial balance')
+            my_object.currency_id = my_object.report_account_id.currency_id
+        elif 'account' in my_object._name:
+            name = my_object.code + ' - ' + my_object.name
+            label = _('Initial balance')
+        super(GeneralLedgerXslx, self).write_initial_balance2(
+            my_object, name, label
         )
 
     def write_ending_balance(self, my_object):
