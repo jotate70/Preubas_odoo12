@@ -286,9 +286,11 @@ class AbstractReportXslx(models.AbstractModel):
                     )
                 elif cell_type == 'amount_currency':
                     if my_object.currency_id:
+                        format_amt = self._get_currency_amt_format(
+                            my_object)
                         self.sheet.write_number(
-                            self.row_pos, col_pos, float(value),
-                            'EEEEEE'
+                            self.row_pos, col_pos,
+                            float(value), format_amt
                         )
             elif column.get('field_currency_balance'):
                 value = getattr(my_object, column['field_currency_balance'])
