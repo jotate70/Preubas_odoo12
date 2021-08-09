@@ -1,4 +1,4 @@
-,<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <template id="assets_backend" name="web_widget_color assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
@@ -9,8 +9,3 @@
     </template>
 </odoo>
 
-<field name="arch" type="xml">
-    <tree string="widget_models">
-        <field name="color" widget="B5E6FF"/>
-    </tree>
-</field>
