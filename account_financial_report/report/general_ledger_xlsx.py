@@ -132,7 +132,6 @@ class GeneralLedgerXslx(models.AbstractModel):
 
                 # Display initial balance line for account
                 self.write_initial_balance(account)
-                self.write_initial_balance2(account)
 
                 # Display account move lines
                 for line in account.move_line_ids:
@@ -151,7 +150,6 @@ class GeneralLedgerXslx(models.AbstractModel):
 
                     # Display initial balance line for partner
                     self.write_initial_balance(partner)
-                    self.write_initial_balance2(account)
 
                     # Display account move lines
                     for line in partner.move_line_ids:
